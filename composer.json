@@ -1,0 +1,22 @@
+{
+    "name": "vespasiano/itnaida",
+    "description": "teste",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Itnaida\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "vespasiano",
+            "email": "vespasianomatheus@gmail.com"
+        }
+    ], 
+    "bin": [
+        "bin/itnaida"
+    ],
+    "license": "MIT",
+    "require": {},
+    "minimum-stability": "dev"
+}
