@@ -16,6 +16,12 @@
     "bin": [
         "bin/itnaida"
     ],
+    "scripts": {
+    "itnaida:init": "php vendor/vespasiano/itnaida/bin/init"
+  },
+  "scripts-descriptions": {
+    "itnaida:init": "Inicializa a itnaida na raiz do projeto (gera itnaida.json e pastas necessárias)."
+  },
     "license": "MIT",
     "require": {},
     "minimum-stability": "dev"
