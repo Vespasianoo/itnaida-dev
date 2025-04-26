@@ -23,6 +23,11 @@ class CommandManager
 
     public static function commandExists(string $command)
     {
-        return class_exists(self::$commands[$command]);
+        if (isset(self::$commands[$command]))
+        {
+            return class_exists(self::$commands[$command]);
+        }
+        
+        return false;
     }
 }

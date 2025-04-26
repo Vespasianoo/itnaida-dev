@@ -12,7 +12,10 @@ class Engine
 
         if (!CommandManager::commandExists($command))
         {
-            echo 'Comando não existe';
+            echo PHP_EOL;
+            echo "Comando \"{$command}\" não encontrado." . PHP_EOL;
+            echo "Dica: use o comando \"help\" para ver todos os comandos disponíveis." . PHP_EOL;
+            echo PHP_EOL;
             return;
         }
         
