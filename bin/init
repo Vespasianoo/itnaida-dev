@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+
+function findProjectRoot(string $startDir): string
+{
+    $currentDir = $startDir;
+
+    while (!file_exists($currentDir . '/composer.json')) {
+        $parentDir = dirname($currentDir);
+
+        if ($parentDir === $currentDir) {
+            throw new Exception('Não foi possível localizar a raiz do projeto.');
+        }
+
+        $currentDir = $parentDir;
+    }
+
+    return $currentDir;
+}
+
+
+$rootPath = findProjectRoot(__DIR__);
+$source = __DIR__ . '/itnaida';
+copy($source, $rootPath. '/itnaida');
