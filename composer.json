@@ -20,6 +20,9 @@
         "class": "Itnaida\\Core\\ComposerPlugin"
     },
     "license": "MIT",
-    "require": {},
+    "require": {
+        "php": ">=8.0",
+        "composer-plugin-api": "^2.0"
+    },
     "minimum-stability": "dev"
 }
