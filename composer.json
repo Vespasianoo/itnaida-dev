@@ -12,10 +12,18 @@
             "name": "vespasiano",
             "email": "vespasianomatheus@gmail.com"
         }
-    ], 
+    ],
     "bin": [
         "bin/itnaida"
     ],
+    "scripts": {
+        "post-install-cmd": [
+            "Itnaida\\Core\\Installer::postInstall"
+        ],
+        "post-update-cmd": [
+            "Itnaida\\Core\\Installer::postInstall"
+        ]
+    },
     "license": "MIT",
     "require": {},
     "minimum-stability": "dev"
