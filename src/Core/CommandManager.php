@@ -23,7 +23,6 @@ class CommandManager
 
     public static function commandExists(string $command)
     {
-        print_r(self::$commands[$command]) . PHP_EOL;
         return class_exists(self::$commands[$command]);
     }
 }

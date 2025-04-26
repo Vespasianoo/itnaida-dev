@@ -8,9 +8,9 @@ class ArgvInput
 {
     public array $param = [];
     private string $command;
-    private string $first;
-    public string $second;
-    public string $third;
+    private ?string $first = null;
+    private ?string $second = null;
+    private ?string $third = null;
     public string $string;
     public array $array;
     public stdClass $options;
@@ -19,15 +19,11 @@ class ArgvInput
     {
         array_shift($argv); // remove app name
         
-        $this->command = $argv[0];
-
-        array_shift($argv); // remove command name
-
+        $this->command = array_shift($argv) ?? 'help';
+        
         $this->array = $argv;
         $this->options = $this->getOptions($argv);
-        $this->first = isset($argv[0]) ? $argv['0'] : null;
-        $this->second = isset($argv[1]) ? $argv['1'] : null;
-        $this->third = isset($argv[2]) ? $argv['2'] : null;
+        [$this->first, $this->second, $this->third] = array_pad($argv, 3, '');
 
         $this->string = $this->getStringCommand();
     } 
@@ -41,12 +37,11 @@ class ArgvInput
         return trim($string);
     }
 
-
     public function getCommand()
     {
         return $this->command;
     }
-
+    
 
     private function getOptions($argv)
     {
