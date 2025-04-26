@@ -11,7 +11,7 @@ class Init extends Command
     public function handle(ArgvInput $argvInput): void
     {
         $currentDir = getcwd();
-        $sourcePath = __DIR__ . '/itnaida';
+        $sourcePath = $currentDir .'./vendor/vespasiano/itnaida/bin/itnaida';
         $destinationPath = $currentDir . '/itnaida';
 
         if (copy($sourcePath, $destinationPath)) {
