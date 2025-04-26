@@ -1,7 +1,7 @@
 {
     "name": "vespasiano/itnaida",
     "description": "teste",
-    "type": "itnaida",
+    "type": "composer-plugin",
     "autoload": {
         "psr-4": {
             "Itnaida\\": "src/"
@@ -16,13 +16,8 @@
     "bin": [
         "bin/itnaida"
     ],
-    "scripts": {
-        "post-install-cmd": [
-            "Itnaida\\Core\\Installer::postInstall"
-        ],
-        "post-update-cmd": [
-            "Itnaida\\Core\\Installer::postInstall"
-        ]
+    "extra": {
+        "class": "Itnaida\\Core\\ComposerPlugin"
     },
     "license": "MIT",
     "require": {},
