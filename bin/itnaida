@@ -5,7 +5,7 @@ use Itnaida\Core\ArgvInput;
 use Itnaida\Core\Engine;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../src/registerCommands.php';
+require_once '../console.php';
 
 Engine::run(new ArgvInput($argv));
 
