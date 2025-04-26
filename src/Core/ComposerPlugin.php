@@ -52,4 +52,15 @@ class ComposerPlugin implements PluginInterface, EventSubscriberInterface
         }
         return $currentDir;
     }
+
+
+    public function deactivate(Composer $composer, IOInterface $io)
+    {
+        // Deixe vazio se não precisa fazer nada ao desativar
+    }
+
+    public function uninstall(Composer $composer, IOInterface $io)
+    {
+        // Deixe vazio se não precisa fazer nada ao desinstalar
+    }
 }
