@@ -1,6 +1,6 @@
 <?php
 
-namespace Itnaida\Utils;
+namespace Itnaida\Lib;
 
 
 abstract class PrintLog

@@ -4,7 +4,7 @@ namespace Itnaida\Commands;
 
 use Itnaida\Core\ArgvInput;
 use Itnaida\Core\Command;
-use Itnaida\Utils\PrintLog;
+use Itnaida\Lib\PrintLog;
 
 class Init extends Command
 {
@@ -15,7 +15,7 @@ class Init extends Command
         $destinationPath = $currentDir . '/itnaida';
 
         if (copy($sourcePath, $destinationPath)) {
-            PrintLog::success("Arquivo movido com sucesso para: $destinationPath");
+            PrintLog::success("Success");
             return;
         } 
         
