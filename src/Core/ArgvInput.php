@@ -2,7 +2,6 @@
 
 namespace Itnaida\Core;
 
-use stdClass;
 
 class ArgvInput
 {
@@ -13,20 +12,37 @@ class ArgvInput
     private ?string $third = null;
     public string $string;
     public array $array;
-    public stdClass $options;
+    public array $options;
 
     public function __construct(array $argv)
     {
+        $this->param = $argv;
         array_shift($argv); // remove app name
         
         $this->command = array_shift($argv) ?? 'help';
         
         $this->array = $argv;
         $this->options = $this->getOptions($argv);
+      
+        $argv = $this->removeOptionInArgv($argv, $this->options);
+        
         [$this->first, $this->second, $this->third] = array_pad($argv, 3, '');
-
+      
         $this->string = $this->getStringCommand();
     } 
+
+    private function removeOptionInArgv(array $argv)
+    {
+        $new = [];
+
+        foreach ($argv as $item) {
+            if ($item[0] != '-') {
+                $new[] = $item;
+            }   
+        }
+
+        return $new;
+    }
     
     private function getStringCommand()
     {
@@ -42,14 +58,24 @@ class ArgvInput
         return $this->command;
     }
     
-
-    private function getOptions($argv)
+    function getOptions(array $itens): array
     {
-        return new stdClass;
-      // definir na class do comando qual os options esperados para tal comando (flags e a versao extend)
-      // ex -f --face
-      // definir tbm a descrição 
+        $options = [];
+    
+        if (empty($itens)) return $options;
+    
+        foreach ($itens as $item) {
+            if (isset($item[0]) && $item[0] === '-' && strlen($item) > 1) {
+                $caracteres = str_split(substr($item, 1)); // trocado de mb_str_split para str_split
+                foreach ($caracteres as $char) {
+                    $options[$char] = true;
+                }
+            }
+        }
+
+        return $options;
     }
+    
 
     public function getFirstArg()
     {
@@ -59,5 +85,10 @@ class ArgvInput
     public function getSecondArg()
     {
         return $this->second;
+    }
+
+    public function getThirdArg()
+    {
+        return $this->third;
     }
 }
