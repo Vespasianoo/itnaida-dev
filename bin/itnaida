@@ -4,6 +4,10 @@
 require_once 'init.php';
 require_once './vendor/vespasiano/itnaida/console.php';
 
+if (php_sapi_name() !== 'cli') {
+    exit("Este script deve ser executado no terminal.\n");
+}
+
 // dev
 // require_once './vendor/autoload.php';
 // require_once './console.php';
