@@ -23,8 +23,11 @@ class MakeModel extends Command
             $this->tableName = $this->getTableName($this->className);
             $this->connector = $argvInput->getSecondArg();
 
-            print_r($argvInput);
-            
+            if (empty($this->connector) && $this->connector == '')
+            {
+                throw new Exception("Conector não informado.");
+            }
+
             $this->setModelPath($this->className . '.php');
 
 
