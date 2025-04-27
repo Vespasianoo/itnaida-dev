@@ -51,9 +51,13 @@ class ArgvInput
       // definir tbm a descrição 
     }
 
-    public function get_first()
+    public function getFirstArg()
     {
         return $this->first;
     }
 
+    public function getSecondArg()
+    {
+        return $this->second;
+    }
 }

@@ -10,41 +10,53 @@ use Itnaida\Lib\PrintLog;
 
 class MakeModel extends Command
 {
+    private string $className;
+    private string $tableName;
+    private string $connector;
+    private string $modelPath = './app/model/';
+
     public function handle(ArgvInput $argvInput): void
     {
         try {
             
-            $className = $argvInput->getFirstArg();
-            $tableName = $this->getTableName($className);
+            $this->className = $argvInput->getFirstArg();
+            $this->tableName = $this->getTableName($this->className);
+            $this->connector = $argvInput->getSecondArg();
 
-            // Caminho onde o arquivo será criado -> pegar dos parametros
-            $modelPath = "./app/model/{$className}.php";
+            print_r($argvInput);
+            
+            $this->setModelPath($this->className . '.php');
 
-            $modelContent = "<?php\n\n";
-            $modelContent .= "use Adianti\Database\TRecord;\n\n";
-            $modelContent .= "class {$className} extends TRecord\n";
-            $modelContent .= "{\n";
-            $modelContent .= "    const TABLENAME = '$tableName';\n";
-            $modelContent .= "    const PRIMARYKEY = 'id';\n";
-            $modelContent .= "    const IDPOLICY = 'max';\n";
-            $modelContent .= "\n";
-            $modelContent .= "    public function __construct(\$id = NULL, \$callObjectLoad = TRUE)\n";
-            $modelContent .= "    {\n";
-            $modelContent .= $this->createAttribute($tableName);
-            $modelContent .= "        // Constructor logic here\n";
-            $modelContent .= "    }\n";
-            $modelContent .= "}\n";
 
-            file_put_contents($modelPath, $modelContent);
-            PrintLog::success('ok');
+            $this->build();
+
+            PrintLog::success("Model {$this->className} criada com sucesso");
         } catch (Exception $e) {
             PrintLog::error($e->getMessage());
         }
     }
 
+    private function build()
+    {
+        $attributes = $this->generateAttributes($this->tableName);
+        $template = $this->getStubs();
+
+        $modelContent = str_replace(
+            ['{{className}}', '{{tableName}}', '{{attributes}}'],
+            [$this->className, $this->tableName, $attributes],
+            $template
+        );
+        
+        file_put_contents($this->modelPath, $modelContent);
+    }
+
+    private function setModelPath($path = null) {
+        $this->modelPath .= "{$path}";
+    }
+
     private function getAttributeTable(string $tableName): array
     {
-        TTransaction::open('permission');
+        TTransaction::open($this->connector);
         $conn = TTransaction::get();
         $conn = $conn->query("PRAGMA table_info($tableName)");
 
@@ -65,20 +77,18 @@ class MakeModel extends Command
         return $columns;
     }
 
-    private function createAttribute($tableName): string
+    private function generateAttributes($tableName): string
     {
-        $modelContent = "        parent::__construct(\$id, \$callObjectLoad);\n";
         $attrs = $this->getAttributeTable($tableName);
-
-        if ($attrs) {
-            foreach ($attrs as $attribute_name) {
-                $modelContent .= "        parent::addAttribute('$attribute_name');\n";
-            }
+        $content = '';
+    
+        foreach ($attrs as $attr) {
+            $content .= "        parent::addAttribute('$attr');\n";
         }
-
-        return $modelContent;
+    
+        return $content;
     }
-
+    
     private function getTableName($className)
     {
         // Adiciona um underscore antes de cada letra maiúscula (exceto a primeira)
@@ -87,5 +97,9 @@ class MakeModel extends Command
         }, $className);
 
         return strtolower($textoSeparado);
+    }
+
+    private function getStubs() {
+        return file_get_contents('./vendor/vespasiano/itnaida/src/templates/model.stub');
     }
 }
