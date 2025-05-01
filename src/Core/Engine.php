@@ -3,6 +3,7 @@
 namespace Itnaida\Core;
 
 use Itnaida\Core\CommandManager;
+use Itnaida\Lib\PrintLog;
 
 class Engine
 {
@@ -12,11 +13,9 @@ class Engine
 
         if (!CommandManager::commandExists($command))
         {
-            echo PHP_EOL;
-            echo "Comando \"{$command}\" não encontrado." . PHP_EOL;
-            echo "Dica: use o comando \"help\" para ver todos os comandos disponíveis." . PHP_EOL;
-            echo PHP_EOL;
-            return;
+            PrintLog::error("Command \"{$command}\" not found.");
+            PrintLog::info("Tip: use the \"help\" command to see all available commands");
+            return; 
         }
         
         $commandObject = CommandManager::getInstanceClassByCommand($command);

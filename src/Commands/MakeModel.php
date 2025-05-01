@@ -16,6 +16,8 @@ class MakeModel extends Command
     private string $modelPath = './app/model';
     private string $path = '';
 
+    const DESCRIPTION = 'Creates a new Model class.';
+    
     public function handle(ArgvInput $argvInput): void
     {
         try {

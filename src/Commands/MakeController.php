@@ -14,6 +14,8 @@ class MakeController extends Command
     private string $controllersPath = './app/control';
     private string $path;
 
+    const DESCRIPTION = 'Creates a new "Controller" class.';
+
     public function handle(ArgvInput $argvInput): void
     {
         try {

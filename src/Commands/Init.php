@@ -8,6 +8,8 @@ use Itnaida\Lib\PrintLog;
 
 class Init extends Command
 {
+    const DESCRIPTION = 'Initializes the project by creating the "itnaida" file';
+ 
     public function handle(ArgvInput $argvInput): void
     {
         $currentDir = getcwd();
