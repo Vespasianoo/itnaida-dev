@@ -19,12 +19,12 @@ class Init extends Command
         if (copy($sourcePath, $destinationPath)) {
 
             if (chmod($destinationPath, 0755)) {
-                PrintLog::success("Sucesso");
+                PrintLog::success('Project initialized! "itnaida" CLI is now available in the project root.');
             } 
 
             return;
         }
 
-        PrintLog::error("Erro ao mover o arquivo. Você esta na raiz do projeto ?");
+        PrintLog::error('Unable to copy the file. Make sure you are in the root directory of the project.');
     }
 }

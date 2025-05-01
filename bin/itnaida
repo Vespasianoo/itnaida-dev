@@ -8,10 +8,6 @@ if (php_sapi_name() !== 'cli') {
     exit();
 }
 
-// dev
-// require_once './vendor/autoload.php';
-// require_once './console.php';
-
 use Itnaida\Core\ArgvInput;
 use Itnaida\Core\Engine;
 
