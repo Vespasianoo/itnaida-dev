@@ -13,24 +13,27 @@ class MakeModel extends Command
     private string $className;
     private string $tableName;
     private string $connector;
-    private string $modelPath = './app/model/';
+    private string $modelPath = './app/model';
+    private string $path = '';
 
     public function handle(ArgvInput $argvInput): void
     {
         try {
-            
+            // adicionar da classname que é obrigatorio
             $this->className = $argvInput->getFirstArg();
-            $this->tableName = $this->getTableName($this->className);
-            $this->connector = $argvInput->getSecondArg();
 
-            if (empty($this->connector) && $this->connector == '')
-            {
-                throw new Exception("Conector não informado.");
+            if (empty($this->className) && $this->className == '') {
+                throw new Exception("Nome da class é obrigatorio.");
             }
 
-            $this->setModelPath($this->className . '.php');
+            $this->tableName = $this->getTableName($this->className);
+            $this->connector = $argvInput->getSecondArg();
+            $this->path = $argvInput->getThirdArg();
 
-
+            if (empty($this->connector) && $this->connector == '') {
+                throw new Exception("Conector não informado.");
+            }
+            
             $this->build();
 
             PrintLog::success("Model {$this->className} criada com sucesso");
@@ -49,12 +52,19 @@ class MakeModel extends Command
             [$this->className, $this->tableName, $attributes],
             $template
         );
-        
-        file_put_contents($this->modelPath, $modelContent);
+
+        $this->createFile($modelContent);
     }
 
-    private function setModelPath($path = null) {
-        $this->modelPath .= "{$path}";
+    private function createFile($modelContent) {
+        $path_target = "{$this->modelPath}/{$this->path}";
+        
+        if ($this->path && !is_dir($path_target)) {
+            mkdir($path_target, 0777, true);
+        }
+
+        $path_target .= "{$this->className}.php";
+        file_put_contents($path_target, $modelContent);
     }
 
     private function getAttributeTable(string $tableName): array
