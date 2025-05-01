@@ -22,9 +22,9 @@ class MakeController extends Command
             
             $this->build();
 
-            PrintLog::success('vamos criar um controller');
+            PrintLog::success("Controller '{$this->className}' was created successfully.");
         } catch (Exception $e) {
-            PrintLog::error($e->getMessage());
+            PrintLog::error("Error: " . $e->getMessage());
         }
     }
 
@@ -41,44 +41,45 @@ class MakeController extends Command
         $this->createFile($controllerContent);
     }
 
-    private function createFile($controllerContent) {
-        
+    private function createFile($controllerContent)
+    {
         $path_target = "{$this->controllersPath}";
         
         if ($this->path) {
             $path_target .= "/{$this->path}";
         }
         
-        if(!is_dir($path_target)) {
+        if (!is_dir($path_target)) {
             mkdir($path_target, 0777, true);
         }
 
         $path_target .= "/{$this->className}.php";
-        // echo  $path_target . PHP_EOL;
+
         file_put_contents($path_target, $controllerContent);
     }
 
     private function setClassName(string $firstArg)
     {
-        if (empty($firstArg) && $firstArg == '') {
-            throw new Exception("Nome da class é obrigatorio.");
+        if (empty($firstArg)) {
+            throw new Exception("The controller name is required.");
         }
 
         $this->className = $firstArg;
         return $this->className;
     }
 
-    private function setPath(string $secondArg)
+    private function setPath(?string $secondArg)
     {
-        $this->path = $secondArg;
+        $this->path = $secondArg ?? '';
         return $this->path;
     }
 
-    private function getStub() {
+    private function getStub()
+    {
         $stub = file_get_contents(Stubs::pathBase . '/controller.stub');
 
         if (!$stub) {
-            throw new Exception("Stub não encotrado");
+            throw new Exception("Controller stub not found.");
         }
 
         return $stub;

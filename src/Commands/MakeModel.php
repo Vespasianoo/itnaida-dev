@@ -19,26 +19,25 @@ class MakeModel extends Command
     public function handle(ArgvInput $argvInput): void
     {
         try {
-            // adicionar da classname que é obrigatorio
             $this->className = $argvInput->getFirstArg();
 
-            if (empty($this->className) && $this->className == '') {
-                throw new Exception("Nome da class é obrigatorio.");
+            if (empty($this->className)) {
+                throw new Exception("Model class name is required.");
             }
 
             $this->tableName = $this->getTableName($this->className);
             $this->connector = $argvInput->getSecondArg();
             $this->path = $argvInput->getThirdArg();
 
-            if (empty($this->connector) && $this->connector == '') {
-                throw new Exception("Conector não informado.");
+            if (empty($this->connector)) {
+                throw new Exception("Database connector must be specified.");
             }
-            
+
             $this->build();
 
-            PrintLog::success("Model {$this->className} criada com sucesso");
+            PrintLog::success("Model '{$this->className}' was created successfully.");
         } catch (Exception $e) {
-            PrintLog::error($e->getMessage());
+            PrintLog::error("Error: " . $e->getMessage());
         }
     }
 
@@ -56,63 +55,74 @@ class MakeModel extends Command
         $this->createFile($modelContent);
     }
 
-    private function createFile($modelContent) {
-        $path_target = "{$this->modelPath}/{$this->path}";
-        
-        if ($this->path && !is_dir($path_target)) {
+    private function createFile(string $modelContent): void
+    {
+        $path_target = "{$this->modelPath}";
+
+        if ($this->path) {
+            $path_target .= "/{$this->path}";
+        }
+
+        if (!is_dir($path_target)) {
             mkdir($path_target, 0777, true);
         }
 
-        $path_target .= "{$this->className}.php";
-        file_put_contents($path_target, $modelContent);
+        $filePath = rtrim($path_target, '/') . "/{$this->className}.php";
+        file_put_contents($filePath, $modelContent);
     }
 
     private function getAttributeTable(string $tableName): array
     {
         TTransaction::open($this->connector);
         $conn = TTransaction::get();
-        $conn = $conn->query("PRAGMA table_info($tableName)");
+        $result = $conn->query("PRAGMA table_info($tableName)");
 
-        $columns_tables = $conn->fetchAll();
+        $columns = $result->fetchAll();
 
-        if (empty($columns_tables)) {
-            throw new Exception("Verifique se a tabela $tableName existe no banco de dados.");
+        if (empty($columns)) {
+            throw new Exception("Table '{$tableName}' was not found in the database. Please check the name and connection.");
         }
 
-        $columns = [];
-        foreach ($columns_tables as $column) {
-            if ($column['name'] != 'id')
-            {
-                $columns[] = $column['name'];
+        $attributes = [];
+        foreach ($columns as $column) {
+            if ($column['name'] !== 'id') {
+                $attributes[] = $column['name'];
             }
         }
 
-        return $columns;
+        return $attributes;
     }
 
-    private function generateAttributes($tableName): string
+    private function generateAttributes(string $tableName): string
     {
-        $attrs = $this->getAttributeTable($tableName);
+        $attributes = $this->getAttributeTable($tableName);
         $content = '';
-    
-        foreach ($attrs as $attr) {
-            $content .= "        parent::addAttribute('$attr');\n";
+
+        foreach ($attributes as $attr) {
+            $content .= "        parent::addAttribute('{$attr}');\n";
         }
-    
+
         return $content;
     }
-    
-    private function getTableName($className)
+
+    private function getTableName(string $className): string
     {
-        // Adiciona um underscore antes de cada letra maiúscula (exceto a primeira)
-        $textoSeparado = preg_replace_callback('/([a-z])([A-Z])/', function($matches) {
+        // Add underscore before each uppercase letter (except the first)
+        $separated = preg_replace_callback('/([a-z])([A-Z])/', function ($matches) {
             return $matches[1] . '_' . strtolower($matches[2]);
         }, $className);
 
-        return strtolower($textoSeparado);
+        return strtolower($separated);
     }
 
-    private function getStubs() {
-        return file_get_contents('./vendor/vespasiano/itnaida/src/templates/model.stub');
+    private function getStubs(): string
+    {
+        $stub = file_get_contents('./vendor/vespasiano/itnaida/src/templates/model.stub');
+
+        if (!$stub) {
+            throw new Exception("Model stub file not found.");
+        }
+
+        return $stub;
     }
 }
