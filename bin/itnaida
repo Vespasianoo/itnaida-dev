@@ -12,4 +12,4 @@ use Itnaida\Core\ArgvInput;
 use Itnaida\Core\Engine;
 
 
-Engine::run(new ArgvInput($argv));
+Engine::run(new ArgvInput);

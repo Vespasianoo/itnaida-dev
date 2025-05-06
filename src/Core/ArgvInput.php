@@ -14,8 +14,10 @@ class ArgvInput
     public array $array;
     public array $options;
 
-    public function __construct(array $argv)
+    public function __construct(?array $argv = null)
     {
+        $argv ??= $_SERVER['argv'] ?? [];
+
         $this->param = $argv;
         array_shift($argv); // remove app name
         
@@ -46,11 +48,7 @@ class ArgvInput
     
     private function getStringCommand()
     {
-        $string = '';
-        $string .= $this->first ? $this->first . ' ' :  '';
-        $string .= $this->second ? $this->second . ' ': '';
-        $string .= $this->third ?  $this->third . ' ' : '';
-        return trim($string);
+        return trim("{$this->first} {$this->second} {$this->third}");
     }
 
     public function getCommand()
@@ -66,7 +64,7 @@ class ArgvInput
     
         foreach ($itens as $item) {
             if (isset($item[0]) && $item[0] === '-' && strlen($item) > 1) {
-                $caracteres = str_split(substr($item, 1)); // trocado de mb_str_split para str_split
+                $caracteres = str_split(substr($item, 1));
                 foreach ($caracteres as $char) {
                     $options[$char] = true;
                 }
